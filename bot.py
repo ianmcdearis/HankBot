@@ -10,10 +10,9 @@ import SECRETS
 
 client = commands.Bot(command_prefix = '#')
 
-extensions = ['evaluate', 'fun', 'error_handler']
+extensions = ['evaluate', 'fun', 'tictactoe', 'error_handler']
 
 client.remove_command('help')
-
 
 @client.event
 async def on_ready():
@@ -40,16 +39,35 @@ async def on_message(message):
 
 @client.event
 async def on_member_join(member):
-	msg = 'Welcome {0.mention}, to the **{1.name}** :cowboy: :tongue:'.format(member, member.server)
-	channel = discord.utils.get(client.get_all_channels(), name='goodvibes')
-	await client.send_message(channel, msg)
-	role = discord.utils.get(member.server.roles, name="residents of the bikini bottom")
+	# Add role to new member
+	role = discord.utils.get(member.server.roles, name='Humans')
 	await client.add_roles(member, role)
+
+	# Random join message
+	join_messages = ['my wife', 'Bobby', 'the dog and a boner', 'a chronic masturbation addiction',
+	'Sandra McCormick', 'Rachael McCormick', 'AIDS', 'a coke addiction', 'WOOF WOOF WOOF',
+	'Elliott in the 1800s', ':o', ':banana:', ':POGGERS:']
+	random_join = random.choice(join_messages)
+
+	# Send join message
+	for channel in member.server.channels:
+		if channel.name == "general" or channel.name == "goodvibes":
+			await client.send_message(channel, 'Hey **{0.mention}**, welcome to **{1.name}**. You won {2}'.format(member, member.server, random_join))
 
 @client.event
 async def on_member_remove(member):
-	channel = discord.utils.get(client.get_all_channels(), name='goodvibes')
-	await client.send_message(channel, '**{0.name}** has left the {1.name}...'.format(member, member.server))
+
+	# Random leave message
+	leave_messages = ['my wife', 'Bobby', 'the dog and a boner', 'a chronic masturbation addiction',
+	'Sandra McCormick', 'Rachael McCormick', 'AIDS', 'a coke addiction', 'WOOF WOOF WOOF',
+	'Elliott in the 1800s', ':o', ':banana:', ':POGGERS:']
+	leave = random.choice(leave_messages)
+
+	# Send leave message
+	for channel in member.server.channels:
+		if channel.name == "general" or channel.name == "goodvibes":
+			await client.send_message(channel, '**{0.name}** left with {1}...'.format(member, leave))
+
 
 @client.event
 async def on_message_delete(message):
@@ -75,6 +93,7 @@ async def on_message_delete(message):
 async def help(ctx):
 	bot = client.user.name
 	author = ctx.message.author
+
 	embed = discord.Embed(
 		title = "Help",
 		description = "[Don't include brackets in commands.]",
@@ -82,12 +101,14 @@ async def help(ctx):
 	)
 	embed.set_author(name=bot, icon_url=client.user.avatar_url)
 	embed.set_thumbnail(url="https://vignette.wikia.nocookie.net/kingofthehill/images/c/c4/Hank_Hill.png/revision/latest?cb=20140504043948")
-	embed.add_field(name='**#help**', value="What you're seeing right now.", inline=False)
-	embed.add_field(name='**#clear** [1-100]', value="Clear 1-100 messages.", inline=False)
-	embed.add_field(name='**#game**', value="Changes the game status of bot", inline=False)
+	embed.add_field(name='**#help**', value=":eyes:", inline=False)
+	embed.add_field(name='**#clear** [1-100]', value="GET THAT OUT OF HERE :middle_finger: ", inline=False)
+	embed.add_field(name='**#pfp** [Optional user]', value="WHAT IS THAT :art:", inline=False)
+	embed.add_field(name='**#status**', value="PLAYING WITH MY BALLS :video_game:", inline=False)
 	embed.add_field(name='**#dick**', value="BOBBY GET THE PROPENE :eggplant:", inline=False)
-	embed.add_field(name='**#echo** [Anything]', value="THE FUCK YOU SAY?", inline=False)
-	embed.add_field(name='**#coin**', value="Heads 🔴, or tails 🔵?", inline=False)
+	embed.add_field(name='**#say** [Anything]', value="THE FUCK YOU SAY? :open_mouth:", inline=False)
+	embed.add_field(name='**#coin**', value="FLIP A COIN :red_circle: ", inline=False)
+	embed.add_field(name='**#rps**', value="🗿📄✂", inline=False)
 
 	math = discord.Embed(
 		title = "Math",
@@ -105,7 +126,7 @@ async def help(ctx):
 # Clear messages with permissions
 @commands.cooldown(1, 5, commands.BucketType.user)
 @client.command(pass_context = True, no_pm = True)
-async def clear(ctx, amount = 10):
+async def clear(ctx, amount = 5):
     channel = ctx.message.channel
     messages = []
     try:
@@ -139,13 +160,13 @@ async def pfp(ctx):
 	# Else return author avatar
 	else:
 		# If no avatar, return default avatar
-		if user.avatar_url.__len__() == 0:
+		if author.avatar_url.__len__() == 0:
 			embed = discord.Embed(title = author.name + " Avatar URL", colour = author.colour, url = author.default_avatar_url)
 			embed.set_image(url=user.default_avatar_url)
 		# Return avatar
 		else:
 			embed = discord.Embed(title = author.name + " Avatar URL", colour = author.colour, url = author.avatar_url)
-			embed.set_image(url=user.avatar_url)
+			embed.set_image(url=author.avatar_url)
 
 	embed.set_footer(text=client.user.name+' by ian#4359', icon_url=client.user.avatar_url)
 	embed.timestamp = datetime.datetime.utcnow()
@@ -165,7 +186,7 @@ async def pfp(ctx):
 # Change the status message of bot
 @commands.cooldown(1, 5, commands.BucketType.user)
 @client.command(pass_context=True)
-async def game(ctx, *args):
+async def status(ctx, *args):
 	game_status = ''
 	for word in args:
 		game_status += word
@@ -173,7 +194,7 @@ async def game(ctx, *args):
 	await client.change_presence(game=discord.Game(name=game_status))
 	await client.say("Bobby updated game status to '{}'".format(game_status))
 
-# Add other cogs
+# Add cogs (extensions)
 if __name__ == '__main__':
 	for extension in extensions:
 		try:

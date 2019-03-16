@@ -9,6 +9,8 @@ from simpleeval import simple_eval
 import ast
 import operator
 
+import traceback
+
 class Evaluate:
     def __init__(self, client):
         self.client = client
@@ -18,25 +20,28 @@ class Evaluate:
         try:
             bot = self.client.user.name
 
+            # Add every word after #math to input variable
             input = ''
-            for shit in args:
-                input += shit
+            for word in args:
+                input += word
                 input += ' '
+
+            # Evaluate using simple_eval python library
             answer = simple_eval(input)
 
             formula = input.replace("**", " ^ ")
             embed = discord.Embed(
                 description = "{} = **{}**".format(formula, answer),
-                colour = discord.Colour.green(),
+                colour = discord.Colour.blue(),
+                title = "Math",
+                url = "https://github.com/danthedeckie/simpleeval#operators"
             )
             embed.set_footer(text=bot+' created by ian#4359')
-            embed.set_author(name="Math")
 
             await self.client.say(embed=embed)
-        except ValueError:
-            await self.client.say("Sorry, those aren't numbers. :japanese_goblin:")
-        except SyntaxError:
-            await self.client.say("Check that statement again, cutie. :wink:")
+        except Exception as e:
+            await self.client.say("what")
+            traceback.print_exception(type(e), e, e.__traceback__)
 
 
 def setup(client):

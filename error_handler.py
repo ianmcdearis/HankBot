@@ -25,7 +25,7 @@ class error_handler:
             return
 
         elif isinstance(error, commands.CommandNotFound):
-            await self.client.send_message(ctx.message.channel, 'URG! That command does not even exist. :rage:')
+            await self.client.send_message(ctx.message.channel, "URG! That command doesn't even exist. :rage:")
             return
 
         elif isinstance(error, commands.CommandOnCooldown):
