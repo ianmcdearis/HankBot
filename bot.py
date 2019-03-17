@@ -150,22 +150,22 @@ async def pfp(ctx):
 		for user in ctx.message.mentions:
 			# If no avatar, return default avatar
 			if user.avatar_url.__len__() == 0:
-				embed = discord.Embed(title = user.name + " Avatar URL", colour = user.colour, url = user.default_avatar_url)
+				embed = discord.Embed(title = user.name + " Avatar URL", colour = discord.Colour.green(), url = user.default_avatar_url)
 				embed.set_image(url=user.default_avatar_url)
 			# Return avatar
 			else:
-				embed = discord.Embed(title = user.name + " Avatar URL", colour = user.colour, url = user.avatar_url)
+				embed = discord.Embed(title = user.name + " Avatar URL", colour = discord.Colour.green(), url = user.avatar_url)
 				embed.set_image(url=user.avatar_url)
 
 	# Else return author avatar
 	else:
 		# If no avatar, return default avatar
 		if author.avatar_url.__len__() == 0:
-			embed = discord.Embed(title = author.name + " Avatar URL", colour = author.colour, url = author.default_avatar_url)
+			embed = discord.Embed(title = author.name + " Avatar URL", colour = discord.Colour.blue(), url = author.default_avatar_url)
 			embed.set_image(url=user.default_avatar_url)
 		# Return avatar
 		else:
-			embed = discord.Embed(title = author.name + " Avatar URL", colour = author.colour, url = author.avatar_url)
+			embed = discord.Embed(title = author.name + " Avatar URL", colour = discord.Colour.blue(), url = author.avatar_url)
 			embed.set_image(url=author.avatar_url)
 
 	embed.set_footer(text=client.user.name+' by ian#4359', icon_url=client.user.avatar_url)

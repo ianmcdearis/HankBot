@@ -12,18 +12,29 @@ class tictactoe:
     def __init__(self, client):
         self.client = client
 
-    @commands.command(pass_context=True)
+    #
+    playerList = {}
+
+    @commands.command(pass_context=True, no_pm=True)
     async def ttt(self, ctx, member):
+
         author = ctx.message.author
         bot = self.client.user.name
 
-        if author:
-            pass
+        # Get second player
+        if(ctx.message.mentions.__len__() > 0):
+            for user in ctx.message.mentions:
+                player_2 = user
+
+        global playerList
+        playerList = {1: author, 2: player_2}
+        playerIcon = {1: ":o:", 2: ":x:"}
+
         # Make embedded message
         def make_embed(player, game_map):
             embed = discord.Embed(
                 description = make_board(game_map),
-                title = "{0.name} vs {1}".format(author, member),
+                title = "{0.name}'s Turn {1}".format(playerList[player], playerIcon[player]),
                 colour = discord.Colour.green(),
             )
             embed.set_footer(text=bot+' by ian#4359')
@@ -50,26 +61,24 @@ class tictactoe:
                     0, 0, 0]
 
         # Choose first player
-        players = [author, member]
-        player = random.choice(players)
+        player = random.randint(1, 2)
 
         # Send intitial message
-        await self.client.say("{0} goes first!".format(player))
+        await self.client.say("{0.mention} goes first!".format(playerList[player]))
         msg = await self.client.say(embed=make_embed(player, game_map))
 
         game_end = False
         while not game_end:
             for player in (1, 2):
-                place = await self.client.wait_for_message(author=author)
+                place = await self.client.wait_for_message(author=playerList[player])
                 if place.content == "end" or place.content == "stop":
+                    await self.client.say("{0.mention} has ended the game.".format(playerList[player]))
                     game_end = True
                 try:
                     game_map[int(place.content)-1] = player
                     await self.client.delete_message(place)
                     await self.client.edit_message(msg, embed=make_embed(player, game_map))
-                except IndexError:
-                    pass
-                except ValueError:
+                except Exception as e:
                     pass
 
 def setup(client):

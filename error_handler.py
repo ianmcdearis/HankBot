@@ -38,7 +38,7 @@ class error_handler:
 
         elif isinstance(error, commands.NoPrivateMessage):
             try:
-                await self.client.send_message(ctx.message.author, 'The {} command can get the fuck out my DMs..'.format(ctx.command))
+                await self.client.send_message(ctx.message.author, ':point_left: Get the {} command out of my DMs...'.format(ctx.command))
                 return
             except discord.Forbidden:
                 pass
