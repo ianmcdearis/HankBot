@@ -3,7 +3,7 @@ A bot made of pure boredom and Discord.py
 
 You can invite the server you are admin on [here](https://discordapp.com/api/oauth2/authorize?client_id=481964769276854272&permissions=32&scope=bot)
 
-### Commands - Fun
+## Commands - Fun
 * #rps - Rock, paper, or scissors against Hank
 * #ttt [User] - Tic Tac Toe against someone
 * #coin - Flip a coin
@@ -11,7 +11,7 @@ You can invite the server you are admin on [here](https://discordapp.com/api/oau
 * #dick - RNG based dick size
 * #random [23-300 | 100] - Random number generator
 
-### Commands - Utility
+## Commands - Utility
 * #status [Anything] - Update the game status of HankBot
 * #clear [0-100] - Clear up to 100 messages
 * #pfp [User (Optional)] - Get the avatar and link of user
