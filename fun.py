@@ -142,22 +142,27 @@ class Fun:
     @commands.command(pass_context=True)
     async def random(self, ctx, *args):
         try:
+            # Get rangeOfNumbers from *args
             rangeOfNumbers = ''
             for word in args:
                 rangeOfNumbers += word + ' '
 
-            numbers = re.split(r"\s|-|-\s", rangeOfNumbers.rstrip())
+            # Parse rangeOfNumbers into array
+            numbers = re.split(r"\s|-|-\s", rangeOfNumbers.strip())
+
             # Between 2 given numbers (E.g. 50-100)
-            if(numbers.__len__() == 2):
+            if(len(numbers) == 2):
                 left = int(numbers[0])
                 right = int(numbers[1])
                 if left > right:
-                    await self.client.say("Number generated from ({0}-{1}): **{2}**".format(right, left, random.randint(right, left)))
+                    await self.client.say("Number generated from ({0}-{1}): **{2:0{len}d}**".format( right, left, random.randint(right, left), len = len(str(left)) ))
                 else:
-                    await self.client.say("Number generated from ({0}-{1}): **{2}**".format(left, right, random.randint(left, right)))
+                    await self.client.say("Number generated from ({0}-{1}): **{2:0{len}d}**".format( left, right, random.randint(left, right), len = len(str(right)) ))
+
             # Between 0 and rangeOfNumbers (E.g. 0-10)
-            elif(numbers.__len__() == 1):
-                await self.client.say("Number generated from (0-{0}): **{1}**".format(rangeOfNumbers.rstrip(), random.randint(0, int(rangeOfNumbers))))
+            elif(len(numbers) == 1):
+                await self.client.say("Number generated from (0-{0}): **{1:0{len}d}**".format( rangeOfNumbers.strip(), random.randint(0, int(rangeOfNumbers)), len = len(str(rangeOfNumbers))-1 ))
+
             # Too much arguments
             else:
                 await self.client.say("Too many arguments :confused: ")
