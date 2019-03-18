@@ -10,36 +10,33 @@ class Fun:
 
     # Say message then delete author message
     @commands.command(pass_context=True, no_pm=True)
-    async def say(self, ctx, *args):
-        message = ctx.message
-        output = ''
-        for word in args:
-            output += word + ' '
-        await self.client.delete_message(message)
-        await self.client.say(output)
+    async def say(self, ctx, *, words):
+        await self.client.delete_message(ctx.message)
+        await self.client.say(words)
 
     # Random dick size
     @commands.command(pass_context=True)
     async def dick(self, ctx):
         author = ctx.message.author
-
         size = random.randint(1, 15)
+
+        # Make dick
         output = '8'
         for i in range(size):
             output += '='
         output += 'D'
+
+        # Hard or soft
         flaccidity = ['hard :eggplant:', 'soft :banana:']
         hard_or_soft = random.choice(flaccidity)
+
         await self.client.say("**{0.mention}** has a ".format(author) + str(size) + " inch dick " + hard_or_soft + " " + output)
 
-    # Rock paper scissors variables (1 == rock, 2 == paper, 3 == scissors)
-    aiChoice = 0
-    playerChoice = 0
-
-    # Rock Paper Scissors
+    # Rock Paper Scissors       1 == Rock   2 == Paper  3 = Scissors
     @commands.command(pass_context=True)
     async def rps(self, ctx):
-        global playerChoice, aiChoice
+        aiChoice = 0
+        playerChoice = 0
 
         author = ctx.message.author
         bot = self.client.user.name
@@ -49,6 +46,10 @@ class Fun:
             e = str(reaction.emoji)
             return e.startswith(('🗿', '📄', '✂'))
 
+        # AI choice
+        aiChoice = random.randint(1, 3)
+        choiceList = {1: '🗿', 2: '📄', 3: '✂'}
+
         # Create embedded message
         embed = discord.Embed(description = "Choose rock 🗿, paper 📄, or scissors ✂!", colour = discord.Colour.gold())
         embed.set_footer(text=bot+' by ian#4359')
@@ -56,13 +57,8 @@ class Fun:
 
         # Initial message
         msg = await self.client.say(embed=embed)
-        await self.client.add_reaction(msg, '🗿')
-        await self.client.add_reaction(msg, '📄')
-        await self.client.add_reaction(msg, '✂')
-
-        # AI choice
-        aiChoice = random.randint(1, 3)
-        choiceList = {1: '🗿', 2: '📄', 3: '✂'}
+        for emoji in choiceList:
+            await self.client.add_reaction(msg, choiceList[emoji])
 
         # Wait for choice
         choice = await self.client.wait_for_reaction(message=msg, check=check, user=author)
@@ -95,48 +91,46 @@ class Fun:
     # Coin flipper
     @commands.command(pass_context=True)
     async def coin(self, ctx):
-    	author = ctx.message.author
-    	bot = self.client.user.name
-    	coin = random.randint(1, 2)
+        author = ctx.message.author
+        bot = self.client.user.name
 
-    	embed = discord.Embed(
-    		description = "Heads 🔴, or tails 🔵?",
-    		colour = discord.Colour.gold(),
-    	)
-    	embed.set_footer(text=bot+' by ian#4359')
-    	embed.set_author(name="Coin Flip")
+        # Coin variables
+        coins = {1: '🔴', 2:'🔵'}
+        aiChoice = random.randint(1, 2)
 
-        # Send intitial message
-    	msg = await self.client.say(embed=embed)
-    	await self.client.add_reaction(msg, '🔴')
-    	await self.client.add_reaction(msg, '🔵')
+        # Create embed
+        embed = discord.Embed(description = "Heads 🔴 or tails 🔵?", colour = discord.Colour.blue())
+        embed.set_footer(text=bot+' by ian#4359')
+        embed.set_author(name="Coin Toss")
 
-    	def check(reaction, author):
-    		e = str(reaction.emoji)
-    		return e.startswith(('🔴', '🔵'))
+        # Send initial message
+        msg = await self.client.say(embed=embed)
+        for emoji in coins:
+            await self.client.add_reaction(msg, coins[emoji])
 
-    	async def send_coin():
-    		if(coin == 1):
-    			embed = discord.Embed(
-    				description = "**{0.user}** guessed {0.reaction.emoji}, it is 🔴!".format(res),
-    				colour = discord.Colour.red(),
-    			)
-    			embed.set_footer(text=bot+' created by ian#4359')
-    			embed.set_author(name="Coin Flip")
+        # Check for emojis
+        def check(reaction, author):
+            e = str(reaction.emoji)
+            return e.startswith(('🔴', '🔵'))
 
-    			await self.client.edit_message(msg, embed=embed)
-    		else:
-    			embed = discord.Embed(
-    				description = "**{0.user}** guessed {0.reaction.emoji}, it is 🔵!".format(res),
-    				colour = discord.Colour.blue(),
-    			)
-    			embed.set_footer(text=bot+' created by ian#4359')
-    			embed.set_author(name="Coin Flip")
+        # Wait for player choice
+        choice = await self.client.wait_for_reaction(message=msg, check=check, user=author)
 
-    			await self.client.edit_message(msg, embed=embed)
+        if ("{0.emoji}".format(choice.reaction)) == "🔴": playerChoice = 1
+        if ("{0.emoji}".format(choice.reaction)) == "🔵": playerChoice = 2
 
-    	res = await self.client.wait_for_reaction(message=msg, check=check, user=author)
-    	await send_coin()
+        # Guessed right
+        if playerChoice is 1 and aiChoice is 1 or playerChoice is 2 and aiChoice is 2:
+            embed = discord.Embed(description = "Lucky ass rng, you're right, it's {0}".format(coins[playerChoice]), colour = discord.Colour.green())
+            embed.set_footer(text=bot+' by ian#4359')
+            embed.set_author(name="You won!")
+            await self.client.edit_message(msg, embed=embed)
+        # Guessed wrong
+        else:
+            embed = discord.Embed(description = "lol nice rng idiot, you lost, it's {0}".format(coins[aiChoice]), colour = discord.Colour.red())
+            embed.set_footer(text=bot+' by ian#4359')
+            embed.set_author(name="You lost..")
+            await self.client.edit_message(msg, embed=embed)
 
     # Random number generator
     @commands.command(pass_context=True)
