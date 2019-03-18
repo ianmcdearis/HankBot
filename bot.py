@@ -39,20 +39,26 @@ async def on_message(message):
 
 @client.event
 async def on_member_join(member):
-	# Add role to new member
-	role = discord.utils.get(member.server.roles, name='Humans')
-	await client.add_roles(member, role)
 
 	# Random join message
-	join_messages = ['my wife', 'Bobby', 'the dog and a boner', 'a chronic masturbation addiction',
-	'Sandra McCormick', 'Rachael McCormick', 'AIDS', 'a coke addiction', 'WOOF WOOF WOOF',
-	'Elliott in the 1800s', ':o', ':banana:', ':POGGERS:']
+	join_messages = [
+	":flushed: Step bro you were gone for so long, welcome {0} to **{1}**",
+	"{0} why are you here? The **{1}** doesn't want you.",
+	"FUCK YOU {0} AND THIS {1} SERVER".upper(),
+	"AMBER ALERT: Missing child ({0}) in **{1}**\nLast seen with 22 year old black male.",
+	"{0} leave the **{1}**, please. We fucking hate you.",
+	"{0} was just sold! Welcome to slavery in **{1}**",
+	"**{1}** BREAKING NEWS:\n{0} just got caught pissing on bitches. Please stay indoors.",
+	"Just moonwalked in on {0} getting touched by Michael Jackson in the **{1}**",
+	"Woof woof {0}, ruff grrrr **{1}** awoo woof.",
+	"{0}! **{1}**!",
+	]
 	random_join = random.choice(join_messages)
 
 	# Send join message
 	for channel in member.server.channels:
 		if channel.name == "general" or channel.name == "goodvibes":
-			await client.send_message(channel, 'Hey **{0.mention}**, welcome to **{1.name}**. You won {2}'.format(member, member.server, random_join))
+			await client.send_message(channel, random_join.format(member.mention, member.server))
 
 @client.event
 async def on_member_remove(member):
@@ -60,7 +66,7 @@ async def on_member_remove(member):
 	# Random leave message
 	leave_messages = ['my wife', 'Bobby', 'the dog and a boner', 'a chronic masturbation addiction',
 	'Sandra McCormick', 'Rachael McCormick', 'AIDS', 'a coke addiction', 'WOOF WOOF WOOF',
-	'Elliott in the 1800s', ':o', ':banana:', ':POGGERS:']
+	'Elliott in the 1800s', ':o', ':banana:', '3.141592653589793238462643383279']
 	leave = random.choice(leave_messages)
 
 	# Send leave message
@@ -145,31 +151,33 @@ async def clear(ctx, amount = 5):
 async def pfp(ctx):
 	author = ctx.message.author
 
+	# Make pfp embed message1
+	def make_embed(profile, avatar_url, color):
+		embed = discord.Embed(title = profile.name + " Avatar URL", colour = color, url = avatar_url)
+		embed.set_image(url=avatar_url)
+		embed.set_footer(text=client.user.name+' by ian#4359', icon_url=client.user.avatar_url)
+		embed.timestamp = datetime.datetime.utcnow()
+		return embed
+
 	# Check for mentions in message
 	if(ctx.message.mentions.__len__() > 0):
 		for user in ctx.message.mentions:
 			# If no avatar, return default avatar
 			if user.avatar_url.__len__() == 0:
-				embed = discord.Embed(title = user.name + " Avatar URL", colour = discord.Colour.green(), url = user.default_avatar_url)
-				embed.set_image(url=user.default_avatar_url)
+				embed = make_embed(user, user.default_avatar_url, discord.Colour.green())
 			# Return avatar
 			else:
-				embed = discord.Embed(title = user.name + " Avatar URL", colour = discord.Colour.green(), url = user.avatar_url)
-				embed.set_image(url=user.avatar_url)
+				embed = make_embed(user, user.avatar_url, discord.Colour.green())
 
 	# Else return author avatar
 	else:
 		# If no avatar, return default avatar
 		if author.avatar_url.__len__() == 0:
-			embed = discord.Embed(title = author.name + " Avatar URL", colour = discord.Colour.blue(), url = author.default_avatar_url)
-			embed.set_image(url=user.default_avatar_url)
+			embed = make_embed(author, author.default_avatar_url, discord.Colour.blue())
 		# Return avatar
 		else:
-			embed = discord.Embed(title = author.name + " Avatar URL", colour = discord.Colour.blue(), url = author.avatar_url)
-			embed.set_image(url=author.avatar_url)
+			embed = make_embed(author, author.avatar_url, discord.Colour.blue())
 
-	embed.set_footer(text=client.user.name+' by ian#4359', icon_url=client.user.avatar_url)
-	embed.timestamp = datetime.datetime.utcnow()
 	await client.say(embed=embed)
 
 # Test command for logging messages
@@ -177,11 +185,10 @@ async def pfp(ctx):
 # async def logme(ctx, amount = 10):
 #     channel = ctx.message.channel
 #     messages = []
-#     async for message in client.logs_from(channel, limit = int(amount)):
+# 	  async for message in client.logs_from(channel, limit = int(amount)):
 #         messages.append(message)
 #         print("{}: {}".format(message.author, message.content))
 #     await client.say("Messages logged.")
-
 
 # Change the status message of bot
 @commands.cooldown(1, 5, commands.BucketType.user)
