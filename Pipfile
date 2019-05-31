@@ -1,2 +1,6 @@
 [requires]
 python_version = "3.6"
+
+[packages]
+pynacl = "*"
+"discord.py" = {git = "https://github.com/Rapptz/discord.py.git"}
