@@ -4,6 +4,7 @@ from discord.ext import commands
 import math
 import traceback
 import sys
+import inspect
 
 class error_handler:
     def __init__(self, client):
@@ -14,22 +15,21 @@ class error_handler:
         # ctx   : Context
         # error : Exception
 
+        def func(a, b, c):
+            pass
+
         if hasattr(ctx.command, 'on_error'):
             await self.client.send_message(ctx.message.channel, 'Sorry, an error occured.')
             return
 
-        ignored = (commands.UserInputError)
         error = getattr(error, 'original', error)
 
-        if isinstance(error, ignored):
-            return
-
-        elif isinstance(error, commands.CommandNotFound):
+        if isinstance(error, commands.CommandNotFound):
             await self.client.send_message(ctx.message.channel, "URG! That command doesn't even exist. :rage:")
             return
 
         elif isinstance(error, commands.CommandOnCooldown):
-            await self.client.send_message(ctx.message.channel, "I'm busy selling propane and propane accessories, please retry in {}s.".format(math.ceil(error.retry_after)))
+            await self.client.send_message(ctx.message.channel, 'Stop spamming "#{0}", I\'m selling propane. (Wait {1:.2f}s)'.format(ctx.command, error.retry_after))
             return
 
         elif isinstance(error, commands.DisabledCommand):
@@ -44,9 +44,12 @@ class error_handler:
                 pass
 
         elif isinstance(error, commands.BadArgument):
-            if ctx.command.qualified_name == 'tag list':
-                await self.client.send_message(ctx.message.channel, 'I could not find that member. Please try again.')
-                return
+            await self.client.send_message(ctx.message.channel, 'Bad argument, try again.')
+            return
+
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await self.client.send_message(ctx.message.channel, 'Missing required arguments! Try again!')
+            return
 
         print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
         traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
