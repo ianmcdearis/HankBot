@@ -1,3 +1,4 @@
-pip
-discord.py
-asyncio
+async-timeout==3.0.0
+PyNaCl==1.0.1
+discord.py==1.1.1
+simpleeval==0.9.6
