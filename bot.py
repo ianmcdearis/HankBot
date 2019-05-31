@@ -6,11 +6,17 @@ from functools import reduce
 
 import datetime
 import random
-import SECRETS
+
+def read_token():
+	with open("token.txt", "r") as f:
+		lines = f.readlines()
+		return lines[0].strip()
+
+TOKEN = read_token()
 
 client = commands.Bot(command_prefix = '#')
 
-extensions = ['fun', 'tictactoe', 'error_handler']
+extensions = ['fun', 'error_handler']
 
 client.remove_command('help')
 
@@ -232,4 +238,4 @@ if __name__ == '__main__':
 		except Exception as error:
 			print('{} cannot be loaded. [{}]'.format(extension, error))
 
-client.run(SECRETS.TOKEN)
+client.run(TOKEN)
