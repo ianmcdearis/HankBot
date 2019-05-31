@@ -1,2 +1,3 @@
-discord==1.0.1
-discord.py==1.1.1
+pip
+discord.py
+asyncio
