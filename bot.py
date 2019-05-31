@@ -10,7 +10,7 @@ import SECRETS
 
 client = commands.Bot(command_prefix = '#')
 
-extensions = ['evaluate', 'fun', 'tictactoe', 'error_handler']
+extensions = ['fun', 'tictactoe', 'error_handler']
 
 client.remove_command('help')
 
@@ -26,7 +26,7 @@ async def on_ready():
 	print('---------------------')
 	print('')
 	await client.change_presence(game=discord.Game(name='with my propane.'))
-	
+
 
 @client.event
 async def on_message(message):
