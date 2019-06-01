@@ -6,7 +6,7 @@ import traceback
 import sys
 import inspect
 
-class error_handler(commands.Cog):
+class error_handler:
     def __init__(self, client):
         self.client = client
 

@@ -16,7 +16,7 @@ TOKEN = read_token()
 
 client = commands.Bot(command_prefix = '#')
 
-extensions = ['fun', 'error_handler']
+extensions = ['fun', 'tictactoe', 'error_handler']
 
 client.remove_command('help')
 
