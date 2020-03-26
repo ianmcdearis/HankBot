@@ -14,7 +14,7 @@ def read_token():
 
 TOKEN = read_token()
 
-client = commands.Bot(command_prefix = '#')
+client = commands.Bot(command_prefix = '%')
 
 extensions = ['fun', 'tictactoe', 'error_handler']
 
@@ -31,7 +31,7 @@ async def on_ready():
 		print(' ' + servers[x-1].name)
 	print('---------------------')
 	print('')
-	await client.change_presence(game=discord.Game(name='with my propane.'))
+	await client.change_presence(game=discord.Game(name='%help for commands'))
 
 
 @client.event
@@ -63,19 +63,22 @@ async def on_member_join(member):
 	]
 	random_join = random.choice(join_messages)
 
+	global defaultRole
+
 	# Send join message
 	for channel in member.server.channels:
 		if channel.name == "general" or channel.name == "goodvibes":
 			await client.send_message(channel, random_join.format(member.mention, member.server))
+			# await client.add_roles(member, defaultRole)
 
 
 @client.event
 async def on_member_remove(member):
 
 	# Random leave message
-	leave_messages = ['my wife', 'Bobby', 'the dog and a boner', 'a chronic masturbation addiction',
-	'Sandra McCormick', 'Rachael McCormick', 'AIDS', 'a coke addiction', 'WOOF WOOF WOOF',
-	'Elliott in the 1800s', ':o', ':banana:', '3.141592653589793238462643383279']
+	leave_messages = ['my wife', 'Joe', 'the dog and a boner', 'a chronic masturbation addiction',
+	'stinky doggy dick', 'Rhonda McDonald', 'AIDS', 'a coke addiction', 'WOOF WOOF WOOF',
+	'stinky', ':o', ':banana:', 'big black cock']
 	leave = random.choice(leave_messages)
 
 	# Send leave message
@@ -112,36 +115,53 @@ async def help(ctx):
 
 	embed = discord.Embed(
 		title = "Help",
-		description = "Propane and propane accessories for HankBot.",
+		description = "Propane and propane accessories for HankBot.\nCommand prefix is '%'",
 		colour = discord.Colour.teal(),
 	)
 
 	embed.set_author(name=bot, icon_url=client.user.avatar_url)
 	embed.set_thumbnail(url="https://vignette.wikia.nocookie.net/kingofthehill/images/c/c4/Hank_Hill.png/revision/latest?cb=20140504043948")
 
-	embed.add_field(name='**#help**', value=":point_left: :eyes:")
-	embed.add_field(name='**#clear** [1-100]', value=":no_entry: :1234:")
+	embed.add_field(name='**help**', value=":point_left: :eyes:")
+	embed.add_field(name='**clear** [1-100]', value=":no_entry: :1234:")
 
-	embed.add_field(name='**#pfp** [Optional user]', value=":frame_photo: :art:")
-	embed.add_field(name='**#userinfo** [Optional user]', value=":thinking: :person_with_blond_hair:")
+	embed.add_field(name='**pfp** [Optional user]', value=":frame_photo: :art:")
+	embed.add_field(name='**userinfo** [Optional user]', value=":thinking: :person_with_blond_hair:")
 
-	embed.add_field(name='**#status** [Anything]', value=":pencil2: :video_game:")
-	embed.add_field(name='**#dick**', value=":eggplant: :banana:")
+	embed.add_field(name='**status** [Anything]', value=":pencil2: :video_game:")
+	embed.add_field(name='**dick**', value=":eggplant: :banana:")
 
-	embed.add_field(name='**#say** [Anything]', value=":open_mouth: :grey_question:")
-	embed.add_field(name='**#magicball** [Anything]', value=":8ball: :crystal_ball:")
+	embed.add_field(name='**say** [Anything]', value=":open_mouth: :grey_question:")
+	embed.add_field(name='**magicball** [Anything]', value=":8ball: :crystal_ball:")
 
-	embed.add_field(name='**#choose** [List]', value=":thinking: :robot: ")
-	embed.add_field(name='**#coin**', value=":large_blue_circle: :red_circle:")
+	embed.add_field(name='**choose** [List]', value=":thinking: :robot: ")
+	embed.add_field(name='**coin**', value=":large_blue_circle: :red_circle:")
 
-	embed.add_field(name='**#rps**', value="🗿📄✂")
-	embed.add_field(name='**#ttt [User]**', value=":o: :x:")
+	embed.add_field(name='**rps**', value="🗿📄✂")
+	embed.add_field(name='**wasteman**', value=":flag_ca: :maple_leaf:")
 
 	embed.set_footer(text=client.user.name+' by ian#4359', icon_url=client.user.avatar_url)
 	embed.timestamp = datetime.datetime.utcnow()
 
 	await client.say(embed=embed)
 
+
+# Set default role
+#
+# FIX THIS
+#
+@client.command(pass_context = True, no_pm = True)
+async def defaultrole(ctx, *, role: discord.Role = None):
+	channel = ctx.message.channel
+	global defaultRole
+	if ctx.message.author.server_permissions.administrator:
+		if role is none:
+			await client.say("You haven't specified a role.")
+		if role not in ctx.message.server.roles:
+			await client.say("That role does not exist.")
+		else:
+			defaultRole = role
+			await client.say("Default has role has been set to {0}".format(role))
 
 # Clear messages with permissions
 @commands.cooldown(1, 5, commands.BucketType.user)

@@ -38,11 +38,12 @@ class Fun:
     # Where you from? IM THE FROM THE 6IX YOU WASTEYUTE
     @commands.command(pass_context=True)
     async def wasteman(self, ctx):
+
         author = ctx.message.author
         salutations = ["yo", "ay"]
-        people = ["shordy", "wasteyute", "ahlie", "cyattie", "gyal", "mandem", "ting", "mans", "bean", "fam", "sweetermenz", "bucktee", "my g", "kawhi", "danaya", f"{author.mention}"]
+        people = ["shordy", "wasteyute", "ahlie", "cyattie", "gyal", "mandem", "ting", "mans", "bean", "fam", "sweetermenz", "bucktee", "my g", "kawhi", "danaya"]
         adjectives = ["bare", "mad", "bad", "bored", "cheesed", "dry"]
-        phrases = ["nyeahhhh", "don't cheese me", "that's wild", "i like nav", "drake can suck my cock", "scoop me", "copped", "hooooly", "flex", "llow it", "that's beat", "mans are marved"]
+        phrases = ["nyeahhhh", "don't cheese me", "that's wild", "i like nav", "drake can suck my cock", "scoop me", "copped", "hooooly", "flex", "lowe it", "that's beat", "mans are marved"]
 
         sentences = [f"{random.choice(salutations)} {author.mention}, you're such a {random.choice(adjectives)} {random.choice(people)}",
         f"{random.choice(people)} {random.choice(phrases)} yo",
@@ -52,6 +53,7 @@ class Fun:
         f"{random.choice(phrases)} {random.choice(phrases)} {random.choice(salutations)}"]
 
         await self.client.say(random.choice(sentences))
+
 
 
     # Rock Paper Scissors       1 == Rock   2 == Paper  3 = Scissors
